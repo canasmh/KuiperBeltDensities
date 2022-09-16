@@ -18,10 +18,11 @@ Between 2020 and 2021, I ran a series of simulations study planetesimal formatio
 **For more information on the streaming instability, check out these articles:**    
 [Youdin & Goodman (2005)](https://ui.adsabs.harvard.edu/link_gateway/2005ApJ...620..459Y/EPRINT_PDF)  
 [Johansen et al. (2007)](https://ui.adsabs.harvard.edu/link_gateway/2007Natur.448.1022J/EPRINT_PDF)   
-[Carrera et al. (2015)](https://ui.adsabs.harvard.edu/link_gateway/2015A%26A...579A..43C/EPRINT_PDF)    
-
-**For more information on pebble accretion, checkout this review by Anders Johansen and Michiel Lambrechts:**
-[Johansen & Lambrechts (2017)](https://www.annualreviews.org/doi/10.1146/annurev-earth-063016-020226)
+[Carrera et al. (2015)](https://ui.adsabs.harvard.edu/link_gateway/2015A%26A...579A..43C/EPRINT_PDF) 
 [Johansen et al. (2015)](https://ui.adsabs.harvard.edu/link_gateway/2015SciA....1E0109J/EPRINT_PDF)    
 [Nesvorný &  Vokrouhlický (2019)](https://ui.adsabs.harvard.edu/link_gateway/2019Icar..331...49N/EPRINT_PDF)    
 [Li & Youdin (2021)](https://ui.adsabs.harvard.edu/link_gateway/2021ApJ...919..107L/EPRINT_PDF)
+
+**For more information on pebble accretion, checkout this review by Anders Johansen and Michiel Lambrechts:**
+[Johansen & Lambrechts (2017)](https://www.annualreviews.org/doi/10.1146/annurev-earth-063016-020226)
+
