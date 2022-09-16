@@ -1,4 +1,4 @@
-# Pebble-Accretion-Formation-of-KBOs
+# Pebble Accretion and the Density Evolution of Kuiper Belt Objects
 This repository is used to study the effects of pebble accretion on small, low density, Kuiper belt objects
 
 ## The Kuiper belt
