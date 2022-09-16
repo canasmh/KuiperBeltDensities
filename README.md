@@ -23,6 +23,6 @@ Between 2020 and 2021, I ran a series of simulations study planetesimal formatio
 [Nesvorný &  Vokrouhlický (2019)](https://ui.adsabs.harvard.edu/link_gateway/2019Icar..331...49N/EPRINT_PDF)    
 [Li & Youdin (2021)](https://ui.adsabs.harvard.edu/link_gateway/2021ApJ...919..107L/EPRINT_PDF)
 
-**For more information on pebble accretion, checkout this review by Anders Johansen and Michiel Lambrechts:**
+**For more information on pebble accretion, checkout this review by Anders Johansen and Michiel Lambrechts:**     
 [Johansen & Lambrechts (2017)](https://www.annualreviews.org/doi/10.1146/annurev-earth-063016-020226)
 
