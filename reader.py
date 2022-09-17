@@ -1,6 +1,8 @@
 from pandas import read_csv as csv
 import numpy as np
 
+from constants import M_PLUTO
+
 
 class StreamingInstabilityData:
 
@@ -55,17 +57,8 @@ class StreamingInstabilityData:
         self.density = np.array(list(self.density) + added_density_final)
         self.n_mass += (m_per_bin * n_bins)
 
-    
-
-
 if __name__ == "__main__":
-    kbos = StreamingInstabilityData(rho_ice=1, rho_sil=3.5, unit_mass=2.823973078884959e+28)
-    print(len(kbos.mass))
-    print(len(kbos.density))
-    print(len(kbos.ice_fraction))
-    kbos.add_masses(n_bins=10, m_per_bin=30, min_dens=0.5, max_dens=0.6, min_mass=1e22, max_mass=1e23)
-    print(len(kbos.mass))
-    print(len(kbos.density))
-    print(len(kbos.ice_fraction))
-
+    from constants import M_PLUTO
     
+    kbos = StreamingInstabilityData(rho_ice=1, rho_sil=3.5, unit_mass=2.823973078884959e+28)
+    kbos.add_masses(n_bins=10, m_per_bin=30, min_dens=0.5, max_dens=0.6, min_mass=5e-3 * M_PLUTO, max_mass=1e-2 * M_PLUTO)
