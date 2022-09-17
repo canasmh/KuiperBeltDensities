@@ -61,7 +61,7 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
     kbos = StreamingInstabilityData(rho_ice=1, rho_sil=3.5, unit_mass=2.823973078884959e+28)
-    kbos.add_masses(n_bins=10, m_per_bin=3, min_dens=0.55, max_dens=0.7, min_mass=5e-3 * M_PLUTO, max_mass=1e-2 * M_PLUTO)
+    kbos.add_masses(n_bins=50, m_per_bin=3, min_dens=min(kbos.density), max_dens=max(kbos.density), min_mass=1e-3 * M_PLUTO, max_mass=1e-2 * M_PLUTO)
 
     plt.figure(figsize=(6,5))
     plt.scatter(kbos.mass / M_PLUTO, kbos.density, c=kbos.ice_fraction * 100, vmin=0, vmax=100)
