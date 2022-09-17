@@ -25,20 +25,15 @@ class StreamingInstabilityData:
 
     def __get_planetesimal_properties(self):
         n_ice, n_sil = self.__read_data()
-        self.porosity = np.repeat(self.initial_porosity, len(n_ice))
+        self.n_mass = len(n_ice)
+        self.porosity = np.repeat(self.initial_porosity, self.n_mass)
         mgas_code = self.total_density * self.dx * self.dy * self.dz  # Sum of the gas mass in our simulation (code units)
-        mgas = mgas_code * self.unit_mass  # Same as above but physical units
         mpar_code = mgas_code * self.eps / self.npar
         mpar = mpar_code * self.unit_mass
 
-        kbo_mass = []
-        kbo_density = []
-        kbo_ice_fraction = []
-
-        for i in range(N_MASS):
-            kbo_ice_fraction.append(sinks_n_ice[i] / (sinks_n_ice[i] + sinks_n_sil[i]))
-            kbo_mass.append((sinks_n_ice[i] + sinks_n_sil[i]) * mpar)
-            kbo_density.append(POROSITY * ((dens_ice * kbo_ice_fraction[i]) + (dens_sil * (1 - kbo_ice_fraction[i]))))
+        self.ice_fraction = np.array([n_ice[i] / (n_ice[i] + n_sil[i]) for i in range(self.n_mass)])
+        self.mass = np.array([(self.n_ice[i] + self.n_sil[i]) * mpar for i in range(self.n_mass)])
+        self.density = np.array([self.porosity[i] * ((self.rho_ice * self.ice_fraction[i]) + (self.rho_sil * (1 - self.ice_fraction[i]))) for i in range(self.n_mass)])
 
 
 if __name__ == "__main__":
