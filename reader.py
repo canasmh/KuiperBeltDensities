@@ -1,7 +1,6 @@
 from pandas import read_csv as csv
 import numpy as np
 
-from constants import M_PLUTO
 
 
 class StreamingInstabilityData:
@@ -59,6 +58,16 @@ class StreamingInstabilityData:
 
 if __name__ == "__main__":
     from constants import M_PLUTO
-    
+    import matplotlib.pyplot as plt
+
     kbos = StreamingInstabilityData(rho_ice=1, rho_sil=3.5, unit_mass=2.823973078884959e+28)
-    kbos.add_masses(n_bins=10, m_per_bin=30, min_dens=0.5, max_dens=0.6, min_mass=5e-3 * M_PLUTO, max_mass=1e-2 * M_PLUTO)
+    kbos.add_masses(n_bins=10, m_per_bin=3, min_dens=0.55, max_dens=0.7, min_mass=5e-3 * M_PLUTO, max_mass=1e-2 * M_PLUTO)
+
+    plt.figure(figsize=(6,5))
+    plt.scatter(kbos.mass / M_PLUTO, kbos.density, c=kbos.ice_fraction * 100, vmin=0, vmax=100)
+    plt.xscale('log')
+    plt.xlabel(r'Mass (M$_{\rm{Pluto}})$')
+    plt.ylabel(r'Density (g cm$^{-3}$)')
+    plt.xlim(5e-5, 2.5)
+    plt.ylim(0, 3)
+    plt.show()
