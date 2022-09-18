@@ -1,0 +1,19 @@
+# List of constants (cgs unless otherwise stated)
+G = 6.67384e-8  # Gravitational constant
+M_SUN = 2e33  # Mass of the sun
+M_EARTH = 6e27  # Mass of the Earth
+M_PLUTO = 1.309e25  # Mass of Pluto
+M_CERES = 9.39e23  # Mass of ceres
+AU_TO_CM = 1.49597871e13  # Centimeters in 1 AU
+SIGMA_MOL = 2e-15
+AMU = 1.6605402e-24  # Atomic Mass unit
+R_GAS = 8.314e7  # The gas constant
+GAMMA = 1.4  # ratio of specific heats
+GAMMA1 = 1. / GAMMA  # Inverse of ratio
+M_MOL = 2.3  # Mean molecular weight
+R_GAS_MU = R_GAS / M_MOL
+C_P = GAMMA * R_GAS_MU / (GAMMA - 1)
+C_V = C_P / GAMMA
+K_B = 1.380649e-16  # Boltzmann Constant
+ALPHA_VISCOSITY = 2./3
+YRS_TO_SEC = 365.25 * 24 * 60 * 60
