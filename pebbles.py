@@ -1,12 +1,11 @@
 import numpy as np
-
 from constants import AU_TO_CM
 
 
 class Pebbles:
     # TODO: Need to formulate the volume and column density distribution
 
-    def __init__(self, n_pebbles, a_min, a_max, rho_sil, model, rho_ice=None):
+    def __init__(self, n_pebbles, a_min, a_max, rho_sil, model, scale_height, gas_density, rho_ice=None):
         
         if model != "decreasing" and model != "constant" and model != "bimodal":
             raise ValueError("Model must be one of following: decreasing, constant, bimodal")
@@ -19,7 +18,7 @@ class Pebbles:
                 raise ValueError("Ice density must be larger than silicate density")
 
         if a_min > a_max:
-            raise ValueError("a_min must be greater than a_max")
+            raise ValueError("a_min must be less than a_max")
 
         self.a_sil = a_min
         self.a_ice = a_max
@@ -29,6 +28,7 @@ class Pebbles:
         self.n_pebbles = n_pebbles
         self.bimodal_split = 0.01  # Bimodal distribution splits at 1 mm
         self.__get_pebble_radius()
+        
         if model == "constant":
             self.q = 0
             self.density = np.repeat(rho_sil, n_pebbles)
@@ -38,6 +38,7 @@ class Pebbles:
             self.__get_pebble_density()
         
         self.__get_pebble_mass()
+        self.stokes_number(scale_height, gas_density)
 
     def __get_pebble_radius(self):
         self.radius = np.logspace(np.log10(self.a_sil), np.log10(self.a_ice), self.n_pebbles)
@@ -124,7 +125,7 @@ if __name__ == "__main__":
         for sil_density in sil_densities:
             for ice_density in ice_densities:
                 try:
-                    pebbles = Pebbles(n_pebbles=n_par, a_min=a_min, a_max=a_max, rho_sil=sil_density, model=model, rho_ice=ice_density)
+                    pebbles = Pebbles(n_pebbles=n_par, a_min=a_min, a_max=a_max, rho_sil=sil_density, model=model, rho_ice=ice_density, scale_height=H, gas_density=rho_g)
                     pebbles.stokes_number(H, rho_g)
                     f_da = pebbles.volume_density_distribution(rho_d=rho_d, alpha=1e-4)
                     W_da = pebbles.column_density_distribution(Z, sigma_g)
