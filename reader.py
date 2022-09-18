@@ -2,7 +2,6 @@ from pandas import read_csv as csv
 import numpy as np
 
 
-
 class StreamingInstabilityData:
 
     def __init__(self, rho_ice, rho_sil, unit_mass, initial_porosity=0.5, file_path="./data/si-data.csv"):
@@ -56,15 +55,37 @@ class StreamingInstabilityData:
         self.density = np.array(list(self.density) + added_density_final)
         self.n_mass += (m_per_bin * n_bins)
 
+class KuiperBeltData:
+
+    def __init__(self, file_path="./data/kbo-data.csv"):
+        self.file_path = file_path
+        self.__read_data()
+
+    def __read_data(self):
+        data = csv(self.file_path)
+        self.density = data["Density"]
+        self.radius = data["Diameter"] / 2 * 1e5
+        self.mass = self.density * 4 / 3 * np.pi * self.radius ** 3
+        self.min_radius = (data["Diameter"] - data["MinusDiameter"]) / 2 * 1e5
+        self.max_radius = (data["Diameter"] - data["PlusDiameter"]) / 2 * 1e5
+        self.min_density = self.mass / ( 4 / 3 * np.pi * self.max_radius ** 3) - self.density
+        self.max_density = self.mass / ( 4 / 3 * np.pi * self.min_radius ** 3) - self.density
+
+
 if __name__ == "__main__":
     from constants import M_PLUTO
     import matplotlib.pyplot as plt
 
     kbos = StreamingInstabilityData(rho_ice=1, rho_sil=3.5, unit_mass=2.823973078884959e+28)
     kbos.add_masses(n_bins=50, m_per_bin=3, min_dens=min(kbos.density), max_dens=max(kbos.density), min_mass=1e-3 * M_PLUTO, max_mass=1e-2 * M_PLUTO)
+    real_kbos = KuiperBeltData()
 
-    plt.figure(figsize=(6,5))
+
+    plt.figure(figsize=(7,5))
     plt.scatter(kbos.mass / M_PLUTO, kbos.density, c=kbos.ice_fraction * 100, vmin=0, vmax=100)
+    plt.scatter(real_kbos.mass / M_PLUTO, real_kbos.density, marker="*", s=15 ** 2, c="r", zorder=5)
+    # print(np.shape([real_kbos.min_density, real_kbos.max_density]))
+    plt.errorbar(x=real_kbos.mass / M_PLUTO, y=real_kbos.density, yerr=[real_kbos.min_density, real_kbos.max_density], ls='none', ecolor='k')
     plt.xscale('log')
     plt.xlabel(r'Mass (M$_{\rm{Pluto}})$')
     plt.ylabel(r'Density (g cm$^{-3}$)')
