@@ -79,6 +79,21 @@ class Pebbles:
     def __get_pebble_mass(self):
         self.mass = self.density * 4 / 3 * np.pi * self.radius ** 3
 
+    def stokes_number(self, scale_height, gas_density):
+        self.St = self.radius * self.density / (scale_height * gas_density)
+        
+    def column_density_distribution(self, Z, gas_column_density):
+        p = 0.5 + self.q
+        W = 3 * (1 - p) * Z * gas_column_density / (4 * np.pi * self.rho_ice * np.sqrt(self.a_ice)) * self.radius ** (-3.5)
+
+        return self.mass * W * np.gradient(self.radius)
+
+    def volume_density_distribution(self, rho_d, alpha):
+        
+        f = 3 * rho_d / (8 * np.pi * self.density * np.sqrt(self.radius.max())) * np.sqrt(1 + self.St / alpha) * self.radius ** (-3.5)
+
+        return self.mass * f * np.gradient(self.radius)
+
 
 if __name__ == "__main__":
     import time
