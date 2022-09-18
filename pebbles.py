@@ -2,7 +2,7 @@ import numpy as np
 
 
 class Pebbles:
-    # TODO: Need to get ice fraction pebbles. also need to formulate the volume and column density distribution
+    # TODO: Need to formulate the volume and column density distribution
 
     def __init__(self, n_pebbles, a_min, a_max, rho_sil, model, rho_ice=None):
         
@@ -28,7 +28,9 @@ class Pebbles:
         self.bimodal_split = 0.1  # Bimodal distribution splits at 1 mm
         self.__get_pebble_radius()
         if model == "constant":
+            self.q = 0
             self.density = np.repeat(rho_sil, n_pebbles)
+            self.ice_fraction = np.repeat(0.0, n_pebbles)
         else:
             self.__get_pebble_density()
 
@@ -41,10 +43,13 @@ class Pebbles:
         q = 0
         
         if self.model == "decreasing":
-            while round(rhops_test, 3) != self.rho_sil and q < 1:
+            while round(rhops_test, 3) != self.rho_sil:
                 q += 1e-5
                 rhops = self.rho_ice * (self.radius / self.radius.max()) ** (-q)
                 rhops_test = rhops.max()
+
+                if rhops_test > self.rho_sil:
+                    raise ValueError("Could not get the correct power law. Please ensure you  are using less than 4 significant figures.")
 
         else:
             rhops = np.repeat(0.0, self.n_pebbles)
@@ -54,16 +59,42 @@ class Pebbles:
                 else:
                     break
             
-            while round(rhops_test, 3) != self.rho_sil and q < 1:
+            while round(rhops_test, 3) != self.rho_sil:
                 q += 1e-5
                 rhops[i:] = self.rho_ice * (self.radius[i:] / self.radius.max()) ** (-q)
                 rhops_test = rhops[i:].max()
 
+                if rhops_test > self.rho_sil:
+                    raise ValueError("Could not get the correct power law. Please ensure you  are using less than 4 significant figures.")
+
             rhops[:i] = np.repeat(self.rho_sil, i)
         
-        self.rhops = rhops
+        self.density = rhops
+        self.ice_fraction = abs(1 - ((self.density - self.density[-1]) / (self.density[0] - self.density[-1])))
         self.q = q
 
 
 if __name__ == "__main__":
-    pebbles = Pebbles(n_pebbles=100, a_min=1e-4, a_max=1, rho_sil=3.7, rho_ice=0.5, model="bimodal")
+    import time
+    n_par = 10
+    models = ["decreasing", "bimodal", "constant"]
+    sil_densities = [2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 3.7896, 3.956]
+    ice_densities = [0.5, 1.0]
+    a_min = 1e-4
+    a_max = 1
+
+    for model in models:
+        print(f"{model:-^120}")
+        time.sleep(1)
+        for sil_density in sil_densities:
+            for ice_density in ice_densities:
+                try:
+                    pebbles = Pebbles(n_pebbles=n_par, a_min=a_min, a_max=a_max, rho_sil=sil_density, model=model, rho_ice=ice_density)
+                except ValueError:
+                    print(f"Could not converge for density:\nrho_ice = {ice_density}\nrho_sil = {sil_density}")
+                time.sleep(1)
+                print(f"{'radius (cm)':=^40}{'density (g/cm3)':=^40}{'ice fraction (%)':=^40}")
+                for i in range(pebbles.n_pebbles):
+                    print(f"{pebbles.radius[i]:^40.3e}{pebbles.density[i]:^40.3f}{pebbles.ice_fraction[i] * 100:^40.3f}")
+                print("")
+
