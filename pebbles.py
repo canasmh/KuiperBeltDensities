@@ -2,6 +2,7 @@ import numpy as np
 
 
 class Pebbles:
+    # TODO: Need to get ice fraction pebbles. also need to formulate the volume and column density distribution
 
     def __init__(self, n_pebbles, a_min, a_max, rho_sil, model, rho_ice=None):
         
@@ -11,12 +12,12 @@ class Pebbles:
         elif rho_ice is None and model != "constant":
             raise ValueError("You must specify rho_ice if not using 'constant' model")
 
-        # if rho_sil not in [2.0, 2.5, 3.0, 3.5]:
-        #     raise ValueError("rho_sil must be one of the following: 2.0, 2.5, 3.0, 3.5")
-
         if model != "constant":
             if rho_ice >= rho_sil:
                 raise ValueError("Ice density must be larger than silicate density")
+
+        if a_min > a_max:
+            raise ValueError("a_min must be greater than a_max")
 
         self.a_sil = a_min
         self.a_ice = a_max
@@ -59,11 +60,9 @@ class Pebbles:
                 rhops_test = rhops[i:].max()
 
             rhops[:i] = np.repeat(self.rho_sil, i)
-
-
-
-            
-
+        
+        self.rhops = rhops
+        self.q = q
 
 
 if __name__ == "__main__":
