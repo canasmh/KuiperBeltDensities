@@ -73,9 +73,22 @@ while t < t_max:
             elif m == n_mass - 1:
                 mass_exceeded = False
 
+    ice_frac_added_list = []
+    for m in range (n_mass):
+        density_added, ice_frac_added, ice_frac_for_list = (0, 0, 0)
+        old_mass = kbos.mass[m]
+        kbos.mass[m] += np.sum(M_ADDED[:, m])
 
+        for p in range(n_pebbles):
+            dm = M_ADDED[p, m]
+            f_mass_rhops = dm / kbos.mass[m]
+            density_added += (pebbles.density[p] * f_mass_rhops)
+            ice_frac_added += (pebbles.ice_fraction[p] * f_mass_rhops)
+            ice_frac_for_list += pebbles.ice_fraction[p] * dm / np.sum(M_ADDED[:, m])
+        ice_frac_added_list.append(ice_frac_for_list)
 
+        kbos.density[m] = kbos.density[m] * (old_mass / kbos.mass[m]) + density_added * (1 - kbos.porosity[m])
+        kbos.ice_fraction[m] = kbos.ice_fraction[m] * (old_mass / kbos.mass[m]) + ice_frac_added
 
-
-    t += dt_init
+    t += dt
     
