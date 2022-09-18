@@ -49,3 +49,21 @@ def bondi_accretion(m, r, rho_d, Omega, St, deltav, H_g, chi=0.4, gamma=0.65, al
 
     return np.pi * Racc_Bondi ** 2 * rho_d * dv * S
 
+def hill_accretion(m, r, rho_d, Omega, St, deltav, H_g, chi=0.4, gamma=0.65, alpha=1e-4):
+
+    chi = 0.4
+    gamma = 0.65
+    
+    tau_f = St / Omega
+    H_p = H_g / np.sqrt(1 + St / alpha)
+    r_Hill = r * (1 / 3 * m / M_SUN) ** (1 / 3)
+    tp = G * m / (deltav + Omega * r_Hill) ** 3
+    fac = np.exp(-chi * (tau_f / tp) ** gamma)
+    
+    Racc_Hill = np.cbrt(St/ 0.1) * r_Hill * fac
+    S = s_function(Racc_Hill, H_p)
+
+    dv_hill = deltav + Omega * Racc_Hill
+
+    return np.pi *  Racc_Hill ** 2 * S * rho_d * dv_hill
+
