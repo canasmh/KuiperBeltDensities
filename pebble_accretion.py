@@ -14,10 +14,11 @@ def s_function(r_acc, h_p):
     return S
 
 
-def focus_accretion(mass, density, rho_d, Omega, St, vesc, deltav, H_g, alpha=1e-4):
+def focus_accretion(mass, density, rho_d, Omega, St, deltav, H_g, alpha=1e-4):
     tau_f = St / Omega
     Stk = deltav * tau_f / radius
     radius = (3 * mass / (4 * np.pi * density)) ** (1 / 3) 
+    vesc = np.sqrt(2 * G * mass / radius)
 
     if (Stk <= 1):
         return 0.
