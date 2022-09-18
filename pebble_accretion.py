@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.special as sp
+from constants import G, M_SUN
 
 
 def s_function(r_acc, h_p):
@@ -27,4 +28,23 @@ def focus_accretion(mass, density, rho_d, Omega, St, vesc, deltav, H_g, alpha=1e
         S = s_function(radius, H_p)
          
         return np.pi * radius ** 2 * rho_d * S * deltav * (1 + vesc ** 2 / deltav ** 2) 
+
+
+def bondi_accretion(m, r, rho_d, Omega, St, deltav, H_g, chi=0.4, gamma=0.65, alpha=1e-4):
+
+    # Bondi radius and Bondi time scale.
+    r_bondi = G * m / deltav ** 2
+    t_bondi = r_bondi / deltav
+    R_Hill = r * (1 / 3 * m / M_SUN) ** (1 / 3)
+    tp = G * m / (deltav + Omega * R_Hill) ** 3
+    t_f = St / Omega
+    tf_over_tbondi = t_f / t_bondi
+    r_acc_hat = 2 * np.sqrt(tf_over_tbondi) * r_bondi
+    fac = np.exp(-chi * (t_f / tp) ** gamma)
+    Racc_Bondi = r_acc_hat * fac
+    H_p = H_g / np.sqrt(1 + St / alpha)
+    S = s_function(Racc_Bondi, H_p)
+    dv = deltav + Omega * Racc_Bondi
+
+    return np.pi * Racc_Bondi ** 2 * rho_d * dv * S
 
