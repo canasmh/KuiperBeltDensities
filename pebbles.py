@@ -31,8 +31,11 @@ class Pebbles:
             self.q = 0
             self.density = np.repeat(rho_sil, n_pebbles)
             self.ice_fraction = np.repeat(0.0, n_pebbles)
+
         else:
             self.__get_pebble_density()
+        
+        self.__get_pebble_mass()
 
     def __get_pebble_radius(self):
         self.radius = np.logspace(np.log10(self.a_sil), np.log10(self.a_ice), self.n_pebbles)
@@ -72,6 +75,9 @@ class Pebbles:
         self.density = rhops
         self.ice_fraction = abs(1 - ((self.density - self.density[-1]) / (self.density[0] - self.density[-1])))
         self.q = q
+    
+    def __get_pebble_mass(self):
+        self.mass = self.density * 4 / 3 * np.pi * self.radius ** 3
 
 
 if __name__ == "__main__":
@@ -93,8 +99,8 @@ if __name__ == "__main__":
                 except ValueError:
                     print(f"Could not converge for density:\nrho_ice = {ice_density}\nrho_sil = {sil_density}")
                 time.sleep(1)
-                print(f"{'radius (cm)':=^40}{'density (g/cm3)':=^40}{'ice fraction (%)':=^40}")
+                print(f"{' radius (cm) ':=^30}{' mass (g) ':=^30}{' density (g/cm3) ':=^30}{' ice fraction (%) ':=^30}")
                 for i in range(pebbles.n_pebbles):
-                    print(f"{pebbles.radius[i]:^40.3e}{pebbles.density[i]:^40.3f}{pebbles.ice_fraction[i] * 100:^40.3f}")
+                    print(f"{pebbles.radius[i]:^30.3e}{pebbles.mass[i]:^30.3e}{pebbles.density[i]:^30.3f}{pebbles.ice_fraction[i] * 100:^30.3f}")
                 print("")
 
