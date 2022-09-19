@@ -55,6 +55,12 @@ class StreamingInstabilityData:
         self.density = np.array(list(self.density) + added_density_final)
         self.n_mass += (m_per_bin * n_bins)
 
+    def radius(self, i=None):
+        if i is None:
+            return (3 * self.mass / (4 * np.pi * self.density)) ** (1 / 3)
+        else:
+            return (3 * self.mass[i] / (4 * np.pi * self.density[i])) ** (1 / 3)
+
 class KuiperBeltData:
 
     def __init__(self, file_path="./data/kbo-data.csv"):
