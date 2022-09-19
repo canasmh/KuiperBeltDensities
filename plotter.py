@@ -37,6 +37,7 @@ def plot_kbo_data(t, si_data : StreamingInstabilityData, i=None, savefig=True):
 
     if savefig:
         plt.savefig('./images/_tmp%04d.png' % i, dpi=300)
+        plt.close()
     else:
         plt.show()
 
