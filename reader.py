@@ -91,7 +91,6 @@ if __name__ == "__main__":
     plt.figure(figsize=(7,5))
     plt.scatter(kbos.mass / M_PLUTO, kbos.density, c=kbos.ice_fraction * 100, vmin=0, vmax=100)
     plt.scatter(real_kbos.mass / M_PLUTO, real_kbos.density, marker="*", s=15 ** 2, c="r", zorder=5)
-    # print(np.shape([real_kbos.min_density, real_kbos.max_density]))
     plt.errorbar(x=real_kbos.mass / M_PLUTO, y=real_kbos.density, yerr=[real_kbos.min_density, real_kbos.max_density], ls='none', ecolor='k')
     plt.xscale('log')
     plt.xlabel(r'Mass (M$_{\rm{Pluto}})$')
