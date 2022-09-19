@@ -74,8 +74,8 @@ class KuiperBeltData:
         self.radius = data["Diameter"] / 2 * 1e5
         self.mass = self.density * 4 / 3 * np.pi * self.radius ** 3
         self.min_radius = (data["Diameter"] - data["MinusDiameter"]) / 2 * 1e5
-        self.max_radius = (data["Diameter"] - data["PlusDiameter"]) / 2 * 1e5
-        self.min_density = self.mass / ( 4 / 3 * np.pi * self.max_radius ** 3) - self.density
+        self.max_radius = (data["Diameter"] + data["PlusDiameter"]) / 2 * 1e5
+        self.min_density = self.density - self.mass / ( 4 / 3 * np.pi * self.max_radius ** 3)
         self.max_density = self.mass / ( 4 / 3 * np.pi * self.min_radius ** 3) - self.density
 
 
@@ -91,7 +91,6 @@ if __name__ == "__main__":
     plt.figure(figsize=(7,5))
     plt.scatter(kbos.mass / M_PLUTO, kbos.density, c=kbos.ice_fraction * 100, vmin=0, vmax=100)
     plt.scatter(real_kbos.mass / M_PLUTO, real_kbos.density, marker="*", s=15 ** 2, c="r", zorder=5)
-    # print(np.shape([real_kbos.min_density, real_kbos.max_density]))
     plt.errorbar(x=real_kbos.mass / M_PLUTO, y=real_kbos.density, yerr=[real_kbos.min_density, real_kbos.max_density], ls='none', ecolor='k')
     plt.xscale('log')
     plt.xlabel(r'Mass (M$_{\rm{Pluto}})$')
