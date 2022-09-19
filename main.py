@@ -40,6 +40,7 @@ dt_init = 10 * t_orb  # Set the initial time step to be 10 orbits
 t_min = IVAR * np.pi / (2 * np.pi) * t_orb  # Starting time is 6 orbits
 t_max = 4.5e6 * YRS_TO_SEC  # Simulation will run for 4.5 Million years
 t = t_min  # Set time to t_min
+it = 0
 
 while t < t_max:
     dt = dt_init
@@ -89,6 +90,24 @@ while t < t_max:
 
         kbos.density[m] = kbos.density[m] * (old_mass / kbos.mass[m]) + density_added * (1 - kbos.porosity[m])
         kbos.ice_fraction[m] = kbos.ice_fraction[m] * (old_mass / kbos.mass[m]) + ice_frac_added
+
+        # Radius a KBO must have to be fully compact
+        radius_to_fully_compact = 1455 * 1e5
+
+        # The porosity of kbo, based on its size
+        new_porosity = min(np.log10(radius_to_fully_compact) - np.log10(kbos.radius(i=m)), 0.5)
+
+        if new_porosity < 0:
+            new_porosity = 0
+
+        # Remove the porosity (i.e., make it fully compact)
+        kbos.density[m] /= (1 - kbos.porosity[m])
+
+        # Replace porosity with new porosity
+        kbos.porosity[m] = new_porosity
+
+        # Get the new density
+        kbos.density[m] *= (1 - kbos.porosity[m])
 
     t += dt
     
