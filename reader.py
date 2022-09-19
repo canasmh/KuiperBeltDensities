@@ -74,8 +74,8 @@ class KuiperBeltData:
         self.radius = data["Diameter"] / 2 * 1e5
         self.mass = self.density * 4 / 3 * np.pi * self.radius ** 3
         self.min_radius = (data["Diameter"] - data["MinusDiameter"]) / 2 * 1e5
-        self.max_radius = (data["Diameter"] - data["PlusDiameter"]) / 2 * 1e5
-        self.min_density = self.mass / ( 4 / 3 * np.pi * self.max_radius ** 3) - self.density
+        self.max_radius = (data["Diameter"] + data["PlusDiameter"]) / 2 * 1e5
+        self.min_density = self.density - self.mass / ( 4 / 3 * np.pi * self.max_radius ** 3)
         self.max_density = self.mass / ( 4 / 3 * np.pi * self.min_radius ** 3) - self.density
 
 
