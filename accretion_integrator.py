@@ -13,9 +13,8 @@ def rk4(dt, acc_type, chi=0.4, gamma=0.65, alpha=1e-4, **kwargs):
         rho_d = kwargs[needed_keys[2]]
         Omega = kwargs[needed_keys[3]]
         St = kwargs[needed_keys[4]]
-        vesc = kwargs[needed_keys[5]]
-        deltav = kwargs[needed_keys[6]]
-        H_g = kwargs[needed_keys[7]]
+        deltav = kwargs[needed_keys[5]]
+        H_g = kwargs[needed_keys[6]]
 
         m1 = focus_accretion(m, rho, rho_d, Omega, St, deltav, H_g, alpha)
         m2 = focus_accretion(m + 0.5 * dt * m1, rho, rho_d, Omega, St, deltav, H_g, alpha)

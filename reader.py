@@ -53,7 +53,14 @@ class StreamingInstabilityData:
         self.ice_fraction = np.array(list(self.ice_fraction) + added_ice_frac_final)
         self.mass = np.array(list(self.mass) + added_masses_final)
         self.density = np.array(list(self.density) + added_density_final)
+        self.porosity = np.array(list(self.porosity) + [0.5] * (n_bins * m_per_bin))
         self.n_mass += (m_per_bin * n_bins)
+
+    def radius(self, i=None):
+        if i is None:
+            return (3 * self.mass / (4 * np.pi * self.density)) ** (1 / 3)
+        else:
+            return (3 * self.mass[i] / (4 * np.pi * self.density[i])) ** (1 / 3)
 
 class KuiperBeltData:
 
