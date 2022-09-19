@@ -53,6 +53,7 @@ class StreamingInstabilityData:
         self.ice_fraction = np.array(list(self.ice_fraction) + added_ice_frac_final)
         self.mass = np.array(list(self.mass) + added_masses_final)
         self.density = np.array(list(self.density) + added_density_final)
+        self.porosity = np.array(list(self.porosity) + [0.5] * (n_bins * m_per_bin))
         self.n_mass += (m_per_bin * n_bins)
 
     def radius(self, i=None):
