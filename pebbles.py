@@ -90,13 +90,13 @@ class Pebbles:
         
     def column_density_distribution(self, Z, gas_column_density):
         p = 0.5 + self.q
-        W = 3 * (1 - p) * Z * gas_column_density / (4 * np.pi * self.rho_ice * np.sqrt(self.a_ice)) * self.radius ** (-3.5)
+        W = 3 * (1 - p) * Z * gas_column_density / (4 * np.pi * self.density[-1] * np.sqrt(self.radius[-1])) * self.radius ** (-3.5)
 
         return self.mass * W * np.gradient(self.radius)
 
     def volume_density_distribution(self, rho_d, alpha):
         p = 0.5 + self.q
-        f = 3 * (1 - p) * rho_d / (4 * np.pi * self.rho_ice * np.sqrt(self.a_ice)) * np.sqrt(1 + self.St / alpha) * self.radius ** (-3.5)
+        f = 3 * (1 - p) * rho_d / (4 * np.pi * self.density[-1]* np.sqrt(self.radius[-1])) * np.sqrt(1 + self.St / alpha) * self.radius ** (-3.5)
 
         return self.mass * f * np.gradient(self.radius)
 
