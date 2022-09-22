@@ -65,6 +65,7 @@ class Pebbles:
                 else:
                     break
             
+            self.split_index = i
             while round(rhops_test, 3) != self.rho_sil:
                 q += 1e-5
                 rhops[i:] = self.rho_ice * (self.radius[i:] / self.radius.max()) ** (-q)
