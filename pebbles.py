@@ -75,9 +75,27 @@ class Pebbles:
                     raise ValueError("Could not get the correct power law. Please ensure you are using less than 4 significant figures.")
 
             rhops[:i] = np.repeat(self.rho_sil, i)
+        if self.model != "bimodal":
+            if q >= 0.5:
+                raise ValueError("Negative densities encountered (q >= 0.5. This is resulting from needing a large exponent to get from rho_sil to rho_ice")
+        else:
+            condition_met = False
+            k = 3.5 
+            while k >= 2:
+                p = k - 3.0 + q
 
-        if q >= 0.5:
-            raise ValueError("Negative densities encounteres (q >= 0.5. This is resulting from needing a large exponent to get from rho_sil to rho_ice")
+                if p <= 0.5:
+                    condition_met = True
+                    break
+                else:
+                    k -= 0.01
+            
+            if condition_met:
+                print(f"p={p}, k={k}, q={q}")
+                self.k = k
+                self.p = p
+            else:
+                raise ValueError("Could not get appropriate (k, q, p) values: {k}, {q}, {p}")
         
         self.density = rhops
         self.ice_fraction = abs(1 - ((self.density - self.density[-1]) / (self.density[0] - self.density[-1])))
@@ -90,14 +108,25 @@ class Pebbles:
         self.St = self.radius * self.density / (scale_height * gas_density)
         
     def column_density_distribution(self, Z, gas_column_density):
-        p = 0.5 + self.q
-        W = 3 * (1 - p) * Z * gas_column_density / (4 * np.pi * self.density[-1] * np.sqrt(self.radius[-1])) * self.radius ** (-3.5)
+        if self.model != "bimodal":
+            p = 0.5 + self.q
+            W = 3 * (1 - p) * Z * gas_column_density / (4 * np.pi * self.density[-1] * np.sqrt(self.radius[-1])) * self.radius ** (-3.5)
 
+        else:
+            W = np.zeros(len(self.radius))
+            W[:self.split_index] = 1.5 * Z * gas_column_density / (4 * np.pi * self.density[self.split_index - 1] * np.sqrt(self.radius[self.split_index - 1])) * self.radius[:self.split_index] ** (-3.5)
+            W[self.split_index:] = 3 * (1 - self.p) * Z * gas_column_density / (4 * np.pi * self.density[-1] * np.sqrt(self.radius[-1])) * self.radius[self.split_index:] ** (-self.k)
         return self.mass * W * np.gradient(self.radius)
 
     def volume_density_distribution(self, rho_d, alpha):
-        p = 0.5 + self.q
-        f = 3 * (1 - p) * rho_d / (4 * np.pi * self.density[-1]* np.sqrt(self.radius[-1])) * np.sqrt(1 + self.St / alpha) * self.radius ** (-3.5)
+        if self.model != "bimodal":
+            p = 0.5 + self.q
+            f = 3 * (1 - p) * rho_d / (4 * np.pi * self.density[-1]* np.sqrt(self.radius[-1])) * np.sqrt(1 + self.St / alpha) * self.radius ** (-3.5)
+
+        else:
+            f = np.zeros(len(self.radius))
+            f[:self.split_index] = 1.5 * rho_d / (4 * np.pi * self.density[self.split_index - 1]* np.sqrt(self.radius[self.split_index - 1])) * np.sqrt(1 + self.St[:self.split_index] / alpha) * self.radius[:self.split_index] ** (-3.5)
+            f[self.split_index:] = 3 * (1 - self.p) * rho_d / (4 * np.pi * self.density[-1]* np.sqrt(self.radius[-1])) * np.sqrt(1 + self.St[self.split_index:] / alpha) * self.radius[self.split_index:] ** (-self.k)
 
         return self.mass * f * np.gradient(self.radius)
 
