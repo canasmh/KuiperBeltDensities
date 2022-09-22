@@ -26,7 +26,7 @@ class Pebbles:
         self.rho_ice = rho_ice
         self.model = model
         self.n_pebbles = n_pebbles
-        self.bimodal_split = 0.01  # Bimodal distribution splits at 0.1 mm
+        self.bimodal_split = 0.1  # Bimodal distribution splits at 1 mm
         self.__get_pebble_radius()
         
         if model == "constant":
