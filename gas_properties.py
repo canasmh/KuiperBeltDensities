@@ -20,9 +20,9 @@ def scale_height(T, R):
     return result
 
 
-def column_density(r):
+def column_density(r, m_disk=0.04*M_SUN, r_c=50*AU_TO_CM):
 
-    return 1000 * (r / AU_TO_CM) ** (-1)
+    return m_disk / (2 * np.pi * r_c ** 2) * (r / r_c) ** (-1)
 
 
 def gas_temp(r):
