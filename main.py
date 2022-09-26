@@ -15,9 +15,18 @@ sigma_g =  column_density(R)
 c_s = sound_speed(T)
 H = scale_height(T, R)
 Omega = kep_frequency(R)
+Q = toomre_q(c_s, Omega, sigma_g)
+
+if Q < 10:
+    print(f"WARNING: Disk is not non self-gravitating -- Q = {Q}")
+    if round(Q) <= 1:
+        raise ValueError(f"Disk is unstable: Toomre Q is {Q:.3f}")
+else:
+    print(f"Toomre Q: {Q}")
+
 rho_g_init = sigma_g / (np.sqrt(2 * np.pi) * H)
 rho_g = rho_g_init
-Z = 0.04 # Dust to gas ratio
+Z = 0.01 # Dust to gas ratio
 rho_d = Z * rho_g
 
 # Streaming Instability results
@@ -27,7 +36,7 @@ n_mass = kbos.n_mass
 
 # Pebble Distribution
 n_pebbles = 50
-pebbles = Pebbles(n_pebbles=n_pebbles, a_min=1e-4, a_max=1.0, rho_ice=1.0, rho_sil=3.0, model='constant', scale_height=H, gas_density=rho_g)
+pebbles = Pebbles(n_pebbles=n_pebbles, a_min=1e-4, a_max=1.0, rho_ice=1.0, rho_sil=3.5, model='bimodal', scale_height=H, gas_density=rho_g)
 f_da = pebbles.volume_density_distribution(rho_d, alpha=1e-4)
 W_da = pebbles.column_density_distribution(Z=Z, gas_column_density=sigma_g)
 delta_v = 3000  # sub-keplerian velocity
