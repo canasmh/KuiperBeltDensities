@@ -49,12 +49,12 @@ tol = 0.01  # The maximum mass accretion rate per dt will be 0.5% of the mass of
 dt_init = 25 * t_orb  # Set the initial time step to be 10 orbits
 dt = dt_init
 t_min = IVAR * np.pi / (2 * np.pi) * t_orb  # Starting time is 6 orbits
-t_max = 4.0e6 * YRS_TO_SEC  # Simulation will run for 4.5 Million years
+t_max = 5e6 * YRS_TO_SEC  # Maximum time of simulation
 t = t_min  # Set time to t_min
 it = 0
 
 # Print output headers
-print(f"{'it':=^10}{'t(yrs)':=^15}{'dt (yrs)':=^15}{'max(m) Pluto':=^20}{'rho(max_m)':=^15}{'ice % (max_m)':=^15}{'phi(max_m)':=^15}{'dm(max_m)':=^15}{'ice % added (max_m)':=^15}")
+print(f"{'it':=^10}{'t(yrs)':=^15}{'dt (yrs)':=^15}{'max(m) Pluto':=^20}{'rho(max_m)':=^15}{'ice % (max_m)':=^15}{'phi(max_m)':=^15}{'dm(max_m)':=^15}{'ice % added (max_m)':=^15}{'optimal a (max_m)':=^20}")
 while t < t_max:
     
     rho_g = rho_g_init * np.exp(-t / t_max)
@@ -125,8 +125,9 @@ while t < t_max:
     if it % 10 == 0:
         imax = np.where(kbos.mass == max(kbos.mass))
         dm_max = float(np.sum(M_ADDED[:,imax]))
+        idm_max = np.where(M_ADDED[:,imax] == np.max(M_ADDED[:, imax]))[0][0]
         plot_kbo_data(t=t / YRS_TO_SEC, i=it // 10, si_data=kbos, savefig=True)
-        print(f"{it:^10}{t / YRS_TO_SEC:^15.3e}{dt / YRS_TO_SEC:^15.3e}{kbos.mass[imax][0] / M_PLUTO:^20.5e}{kbos.density[imax][0]:^15.5f}{kbos.ice_fraction[imax][0] * 100:^15.3f}{kbos.porosity[imax][0]:^15.3f}{dm_max / (dt / t_orb) / M_PLUTO:^15.3e}{ice_frac_added_list[int(imax[0])] * 100:^15.3f}")
+        print(f"{it:^10}{t / YRS_TO_SEC:^15.3e}{dt / YRS_TO_SEC:^15.3e}{kbos.mass[imax][0] / M_PLUTO:^20.5e}{kbos.density[imax][0]:^15.5f}{kbos.ice_fraction[imax][0] * 100:^15.3f}{kbos.porosity[imax][0]:^15.3f}{dm_max / (dt / t_orb) / M_PLUTO:^15.3e}{ice_frac_added_list[int(imax[0])] * 100:^15.3f}{pebbles.radius[idm_max]:^20.3e}")
 
     t += dt
     it += 1
