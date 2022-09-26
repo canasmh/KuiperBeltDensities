@@ -1,13 +1,11 @@
 from accretion_integrator import rk4
 from constants import AU_TO_CM, M_PLUTO, YRS_TO_SEC, G
-from gas_properties import sound_speed, scale_height, kep_frequency, gas_temp, column_density
+from gas_properties import sound_speed, scale_height, kep_frequency, gas_temp, column_density, toomre_q
 from pebbles import Pebbles
 from plotter import plot_kbo_data
 from reader import StreamingInstabilityData
 import numpy as np
 import matplotlib.pyplot as plt
-
-# TODO: Need to make a plotter function
 
 R = 20 * AU_TO_CM
 
@@ -17,9 +15,18 @@ sigma_g =  column_density(R)
 c_s = sound_speed(T)
 H = scale_height(T, R)
 Omega = kep_frequency(R)
+Q = toomre_q(c_s, Omega, sigma_g)
+
+if Q < 10:
+    print(f"WARNING: Disk is not non self-gravitating -- Q = {Q}")
+    if round(Q) <= 1:
+        raise ValueError(f"Disk is unstable: Toomre Q is {Q:.3f}")
+else:
+    print(f"Toomre Q: {Q}")
+
 rho_g_init = sigma_g / (np.sqrt(2 * np.pi) * H)
 rho_g = rho_g_init
-Z = 0.04 # Dust to gas ratio
+Z = 0.01 # Dust to gas ratio
 rho_d = Z * rho_g
 
 # Streaming Instability results
@@ -29,7 +36,7 @@ n_mass = kbos.n_mass
 
 # Pebble Distribution
 n_pebbles = 50
-pebbles = Pebbles(n_pebbles=n_pebbles, a_min=1e-4, a_max=1.0, rho_ice=1.0, rho_sil=3.0, model='constant', scale_height=H, gas_density=rho_g)
+pebbles = Pebbles(n_pebbles=n_pebbles, a_min=1e-4, a_max=1.0, rho_ice=1.0, rho_sil=3.5, model='bimodal', scale_height=H, gas_density=rho_g)
 f_da = pebbles.volume_density_distribution(rho_d, alpha=1e-4)
 W_da = pebbles.column_density_distribution(Z=Z, gas_column_density=sigma_g)
 delta_v = 3000  # sub-keplerian velocity
@@ -42,12 +49,12 @@ tol = 0.01  # The maximum mass accretion rate per dt will be 0.5% of the mass of
 dt_init = 25 * t_orb  # Set the initial time step to be 10 orbits
 dt = dt_init
 t_min = IVAR * np.pi / (2 * np.pi) * t_orb  # Starting time is 6 orbits
-t_max = 4.0e6 * YRS_TO_SEC  # Simulation will run for 4.5 Million years
+t_max = 5e6 * YRS_TO_SEC  # Maximum time of simulation
 t = t_min  # Set time to t_min
 it = 0
 
 # Print output headers
-print(f"{'it':=^10}{'t(yrs)':=^15}{'dt (yrs)':=^15}{'max(m) Pluto':=^20}{'rho(max_m)':=^15}{'ice % (max_m)':=^15}{'phi(max_m)':=^15}{'dm(max_m)':=^15}{'ice % added (max_m)':=^15}")
+print(f"{'it':=^10}{'t(yrs)':=^15}{'dt (yrs)':=^15}{'max(m) Pluto':=^20}{'rho(max_m)':=^15}{'ice % (max_m)':=^15}{'phi(max_m)':=^15}{'dm(max_m)':=^15}{'ice % added (max_m)':=^15}{'optimal a (max_m)':=^20}")
 while t < t_max:
     
     rho_g = rho_g_init * np.exp(-t / t_max)
@@ -118,8 +125,9 @@ while t < t_max:
     if it % 10 == 0:
         imax = np.where(kbos.mass == max(kbos.mass))
         dm_max = float(np.sum(M_ADDED[:,imax]))
+        idm_max = np.where(M_ADDED[:,imax] == np.max(M_ADDED[:, imax]))[0][0]
         plot_kbo_data(t=t / YRS_TO_SEC, i=it // 10, si_data=kbos, savefig=True)
-        print(f"{it:^10}{t / YRS_TO_SEC:^15.3e}{dt / YRS_TO_SEC:^15.3e}{kbos.mass[imax][0] / M_PLUTO:^20.5e}{kbos.density[imax][0]:^15.5f}{kbos.ice_fraction[imax][0] * 100:^15.3f}{kbos.porosity[imax][0]:^15.3f}{dm_max / (dt / t_orb) / M_PLUTO:^15.3e}{ice_frac_added_list[int(imax[0])] * 100:^15.3f}")
+        print(f"{it:^10}{t / YRS_TO_SEC:^15.3e}{dt / YRS_TO_SEC:^15.3e}{kbos.mass[imax][0] / M_PLUTO:^20.5e}{kbos.density[imax][0]:^15.5f}{kbos.ice_fraction[imax][0] * 100:^15.3f}{kbos.porosity[imax][0]:^15.3f}{dm_max / (dt / t_orb) / M_PLUTO:^15.3e}{ice_frac_added_list[int(imax[0])] * 100:^15.3f}{pebbles.radius[idm_max]:^20.3e}")
 
     t += dt
     it += 1
