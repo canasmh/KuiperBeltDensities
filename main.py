@@ -1,13 +1,11 @@
 from accretion_integrator import rk4
 from constants import AU_TO_CM, M_PLUTO, YRS_TO_SEC, G
-from gas_properties import sound_speed, scale_height, kep_frequency, gas_temp, column_density
+from gas_properties import sound_speed, scale_height, kep_frequency, gas_temp, column_density, toomre_q
 from pebbles import Pebbles
 from plotter import plot_kbo_data
 from reader import StreamingInstabilityData
 import numpy as np
 import matplotlib.pyplot as plt
-
-# TODO: Need to make a plotter function
 
 R = 20 * AU_TO_CM
 
