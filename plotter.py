@@ -19,7 +19,7 @@ def plot_kbo_data(t, si_data : StreamingInstabilityData, i=None, savefig=True):
 
     ax.scatter(kbos.mass / M_PLUTO, kbos.density, marker="*", s=15 ** 2, c="r", zorder=2.5)
     ax.errorbar(x=kbos.mass / M_PLUTO, y=kbos.density, yerr=[kbos.min_density, kbos.max_density], ls='none', ecolor='k')
-    img = ax.scatter(x=si_data.mass / M_PLUTO, y=si_data.density, c=si_data.ice_fraction * 100, vmin=0, vmax=100)
+    img = ax.scatter(x=si_data.mass / M_PLUTO, y=si_data.density, c=si_data.ice_fraction * 100, vmin=0, vmax=100, zorder=3)
 
     color_bars = np.linspace(0, 100, 11)
     cb_label = make_string(color_bars)
