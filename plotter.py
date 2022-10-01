@@ -19,7 +19,7 @@ def plot_kbo_data(t, si_data : StreamingInstabilityData, i=None, savefig=True):
 
     ax.scatter(kbos.mass / M_PLUTO, kbos.density, marker="*", s=15 ** 2, c="r", zorder=2.5)
     ax.errorbar(x=kbos.mass / M_PLUTO, y=kbos.density, yerr=[kbos.min_density, kbos.max_density], ls='none', ecolor='k')
-    img = ax.scatter(x=si_data.mass / M_PLUTO, y=si_data.density, c=si_data.ice_fraction * 100, vmin=0, vmax=100)
+    img = ax.scatter(x=si_data.mass / M_PLUTO, y=si_data.density, c=si_data.ice_fraction * 100, vmin=0, vmax=100, zorder=3)
 
     color_bars = np.linspace(0, 100, 11)
     cb_label = make_string(color_bars)
@@ -45,6 +45,24 @@ def plot_kbo_data(t, si_data : StreamingInstabilityData, i=None, savefig=True):
 def make_string(some_list):
 
     return [f"{item:.1f}" for item in some_list]
+
+
+def animate_figures(filename, move_files=True):
+
+    import os
+
+    if move_files:
+        dir_exists = os.system(f"mkdir images/{filename}")
+        if dir_exists == 0:
+            # This means directory did not exist already
+            os.system(f"ffmpeg -i ./images/_tmp%04d.png -r 24 -b 1000k -vcodec mpeg4 -y ./images/{filename}/{filename}.mov")
+            os.system(f"mv ./images/*.png ./images/{filename}")
+
+        else:
+            os.system(f"rm ./images/{filename}/*.png ./images/{filename}/{filename}.mov")
+            os.system(f"ffmpeg -i ./images/_tmp%04d.png -r 24 -b 1000k -vcodec mpeg4 -y ./images/{filename}/{filename}.mov")
+            os.system(f"mv ./images/*.png ./images/{filename}")
+    
 
 if __name__ == "__main__":
 
