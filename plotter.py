@@ -46,6 +46,24 @@ def make_string(some_list):
 
     return [f"{item:.1f}" for item in some_list]
 
+
+def animate_figures(filename, move_files=True):
+
+    import os
+
+    if move_files:
+        dir_exists = os.system(f"mkdir images/{filename}")
+        if dir_exists == 0:
+            # This means directory did not exist already
+            os.system(f"ffmpeg -i ./images/_tmp%04d.png -r 24 -b 1000k -vcodec mpeg4 -y ./images/{filename}/{filename}.mov")
+            os.system(f"mv ./images/*.png ./images/{filename}")
+
+        else:
+            os.system(f"rm ./images/{filename}/*.png ./images/{filename}/{filename}.mov")
+            os.system(f"ffmpeg -i ./images/_tmp%04d.png -r 24 -b 1000k -vcodec mpeg4 -y ./images/{filename}/{filename}.mov")
+            os.system(f"mv ./images/*.png ./images/{filename}")
+    
+
 if __name__ == "__main__":
 
     kbos = StreamingInstabilityData(rho_ice=1.0, rho_sil=3.0, unit_mass=2.823973078884959e+28)
