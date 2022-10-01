@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+
+# Ignore saved figures and jupyter notebooks
+*.png
+*.pdf
+*.ipynb
+
 # C extensions
 *.so
 
