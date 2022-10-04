@@ -9,6 +9,9 @@ __pycache__/
 *.pdf
 *.ipynb
 
+# Ignore c++ executables
+*.out
+
 # C extensions
 *.so
 
