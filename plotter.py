@@ -2,6 +2,7 @@ from cProfile import label
 import matplotlib.pyplot as plt
 from reader import StreamingInstabilityData
 import numpy as np
+from matplotlib import colors
 
 def plot_kbo_data(t, si_data : StreamingInstabilityData, i=None, savefig=True):
     from reader import KuiperBeltData
@@ -17,9 +18,12 @@ def plot_kbo_data(t, si_data : StreamingInstabilityData, i=None, savefig=True):
     ax = fig.add_subplot(111)
     ax.set_title(f"T = {t :.4e} Years", fontsize=LARGE)
 
-    ax.scatter(kbos.mass / M_PLUTO, kbos.density, marker="*", s=15 ** 2, c="r", zorder=2.5)
-    ax.errorbar(x=kbos.mass / M_PLUTO, y=kbos.density, yerr=[kbos.min_density, kbos.max_density], ls='none', ecolor='k')
-    img = ax.scatter(x=si_data.mass / M_PLUTO, y=si_data.density, c=si_data.ice_fraction * 100, vmin=0, vmax=100, zorder=3)
+    cmap = plt.cm.seismic_r
+    norm = colors.BoundaryNorm(np.arange(0, 110, 10), cmap.N)
+
+    ax.scatter(kbos.mass / M_PLUTO, kbos.density, marker="*", s=15 ** 2, c="darkgreen", zorder=2.5)
+    ax.errorbar(x=kbos.mass / M_PLUTO, y=kbos.density, yerr=[kbos.min_density, kbos.max_density], ls='none', ecolor='darkgreen')
+    img = ax.scatter(x=si_data.mass / M_PLUTO, y=si_data.density, c=si_data.ice_fraction * 100, cmap=cmap, norm=norm, zorder=3)
 
     color_bars = np.linspace(0, 100, 11)
     cb_label = make_string(color_bars)
@@ -32,11 +36,11 @@ def plot_kbo_data(t, si_data : StreamingInstabilityData, i=None, savefig=True):
     ax.set_xscale('log')
     ax.set_xlabel(r'Mass (M$_{\rm{Pluto}}$)', fontsize=MEDIUM, labelpad=SMALL)
     ax.set_ylabel(r'Density (g cm$^{-3}$)', fontsize=MEDIUM, labelpad=SMALL)
-    ax.set_xlim(6e-5, 2.5e0)
+    ax.set_xlim(6e-5, 5)
     ax.set_ylim(0, 3)
 
     if savefig:
-        plt.savefig('./images/_tmp%04d.png' % i, dpi=350)
+        plt.savefig('./images/_tmp%04d.png' % i, dpi=350, bbox_inches="tight")
         plt.close()
     else:
         plt.show()
