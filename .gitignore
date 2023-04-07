@@ -139,3 +139,6 @@ dmypy.json
 
 # Ignore the images plotted
 images/
+
+*.DS_Store
+*.npz
