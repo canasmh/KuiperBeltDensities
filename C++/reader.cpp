@@ -51,14 +51,19 @@ StreamingInstabilityData::StreamingInstabilityData(float rho_ice, float rho_sil,
     SIData.close();
 };
 
-// int main() {
+void StreamingInstabilityData::add_masses(unsigned int n_bins, unsigned int m_per_bins, double min_dens, double max_dens, double min_mass, double max_mass) {
+    double dmass = (max_mass - min_mass) / (n_bins * 1.0);
+    for (unsigned int i=0; i < n_bins; i++) {
+        double current_mass = min_mass;
+        for (unsigned int j=0; j < m_per_bins; j++) {
+            double new_density = min_dens + ((double) rand() / (RAND_MAX)) * (max_dens - min_dens);
+            double new_ice_fraction = (new_density - StreamingInstabilityData::rho_sil * StreamingInstabilityData::initial_porosity) / ((StreamingInstabilityData::rho_ice - StreamingInstabilityData::rho_sil) * StreamingInstabilityData::initial_porosity);
+            StreamingInstabilityData::mass.push_back(current_mass);
+            StreamingInstabilityData::density.push_back(new_density);
+            StreamingInstabilityData::ice_fraction.push_back(new_ice_fraction);
+            StreamingInstabilityData::porosity.push_back(StreamingInstabilityData::initial_porosity);
 
-//     StreamingInstabilityData kbos(1.0, 3.0, 2.823973078884959e+28, 0.5, "../data/si-data.csv");
-//     cout << "Mass     " << "Density     " << "Ice fraction    %   " << endl;
-//     for (int i=0; i < kbos.mass.size(); i++) {
+        }
+    }
 
-//         cout << kbos.mass[i] << " " << kbos.density[i] << " " << kbos.ice_fraction[i] * 100 << endl;
-//     }
-
-//     return 0;
-// };
+}

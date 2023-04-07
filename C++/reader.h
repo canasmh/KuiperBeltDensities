@@ -30,6 +30,7 @@ public:
     double mgas_code = total_density * dx * dy * dz;
     double mpar_code = mgas_code * eps / npar;
     double mpar;
+    void add_masses(unsigned int n_bins, unsigned int m_per_bins, double min_dens, double max_dens, double min_mass, double max_mass);
 
     StreamingInstabilityData(float rho_ice, float rho_sil, float unit_mass, float initial_porosity, string filepath);
 };
