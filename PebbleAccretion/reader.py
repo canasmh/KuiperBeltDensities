@@ -77,7 +77,7 @@ class KuiperBeltData:
         self.max_radius = (data["Diameter"] + data["PlusDiameter"]) / 2 * 1e5
         self.min_density = self.density - self.mass / ( 4 / 3 * np.pi * self.max_radius ** 3)
         self.max_density = self.mass / ( 4 / 3 * np.pi * self.min_radius ** 3) - self.density
-
+        self.name = data["Label"]
 
 if __name__ == "__main__":
     from constants import M_PLUTO
