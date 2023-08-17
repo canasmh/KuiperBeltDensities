@@ -2,12 +2,12 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+StreamingInstability/run15_ivar16/*.npz
+.DS_Store
 
 # Ignore saved figures and jupyter notebooks
 *.png
 *.pdf
-*.ipynb
 .ipynb_checkpoints
 
 # C extensions
